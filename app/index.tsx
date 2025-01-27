@@ -1,4 +1,10 @@
-import { Text, View, StyleSheet, StatusBar } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  StatusBar,
+  TouchableWithoutFeedback,
+} from "react-native";
 import {
   RobotoMono_500Medium_Italic,
   useFonts,
@@ -8,10 +14,14 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import * as SplashScreen from "expo-splash-screen";
 
 import { useEffect } from "react";
+import { useState } from "react";
+import ImageViewer from "./imageViewer";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function Index() {
+  const [isModalVisible, setModalVisible] = useState<boolean>(false);
+
   const [loaded, error] = useFonts({
     RobotoMono_500Medium_Italic,
     RobotoMono_300Light,
@@ -27,15 +37,28 @@ export default function Index() {
     return null;
   }
 
+  const openModel = () => {
+    setModalVisible(true);
+  };
+
+  const onModalClose = () => {
+    setModalVisible(false);
+  };
+
   return (
     <View style={styles.wrapper}>
       <StatusBar barStyle="light-content" backgroundColor="#151618" />
-      <Text style={styles.headerText}>Image</Text>
-      <Text style={styles.headerText}>Enhancer</Text>
-      <View style={styles.iconContainer}>
-        <AntDesign name="pluscircleo" size={150} color="#94999F" />
-        <Text style={styles.iconText}>Tap anywhere to select a photo</Text>
-      </View>
+      <TouchableWithoutFeedback onPress={openModel}>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.headerText}>Image</Text>
+          <Text style={styles.headerText}>Enhancer</Text>
+          <View style={styles.iconContainer}>
+            <AntDesign name="pluscircleo" size={150} color="#94999F" />
+            <Text style={styles.iconText}>Tap anywhere to select a photo</Text>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+      <ImageViewer isVisible={isModalVisible} onClose={onModalClose} />
     </View>
   );
 }

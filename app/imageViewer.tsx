@@ -8,17 +8,22 @@ import {
 } from "react-native";
 import { PropsWithChildren } from "react";
 import { Image } from "expo-image";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import Entypo from "@expo/vector-icons/Entypo";
 import { RobotoMono_300Light, useFonts } from "@expo-google-fonts/roboto-mono";
 
-const placeHolderImage = require("../assets/images/sample3.png");
+const placeHolderImage = require("../assets/images/sample6.jpg");
 
 type Props = PropsWithChildren<{
   isVisible: boolean;
   onClose(): void;
+  selectedImage?: string;
 }>;
 
-export default function ImageViewer({ isVisible, onClose }: Props) {
+export default function ImageViewer({
+  isVisible,
+  onClose,
+  selectedImage,
+}: Props) {
   const [loaded] = useFonts({
     RobotoMono_300Light,
   });
@@ -32,10 +37,13 @@ export default function ImageViewer({ isVisible, onClose }: Props) {
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <Pressable onPress={onClose} style={styles.closeButton}>
-            <AntDesign name="closecircleo" size={40} color="#FBFDFC" />
+            <Entypo name="cross" size={34} color="#FBFDFC" />
           </Pressable>
           <View style={styles.imageContainer}>
-            <Image source={placeHolderImage} style={styles.image} />
+            <Image
+              source={selectedImage ? { uri: selectedImage } : placeHolderImage}
+              style={styles.image}
+            />
           </View>
           <TouchableOpacity style={styles.buttonContainer}>
             <Text style={styles.buttonText}>Enhance</Text>

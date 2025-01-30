@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Modal,
   View,
@@ -6,18 +7,25 @@ import {
   TouchableOpacity,
   Pressable,
 } from "react-native";
-import { PropsWithChildren } from "react";
 import { Image } from "expo-image";
 import Entypo from "@expo/vector-icons/Entypo";
 import { RobotoMono_300Light, useFonts } from "@expo-google-fonts/roboto-mono";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+
+type RootStackParamList = {
+  Loading: { imageUri: string };
+};
+
+type NavigationProp = StackNavigationProp<RootStackParamList, "Loading">;
 
 const placeHolderImage = require("../assets/images/sample6.jpg");
 
-type Props = PropsWithChildren<{
+type Props = {
   isVisible: boolean;
   onClose(): void;
   selectedImage?: string;
-}>;
+};
 
 export default function ImageViewer({
   isVisible,
@@ -28,9 +36,18 @@ export default function ImageViewer({
     RobotoMono_300Light,
   });
 
+  const navigation = useNavigation<NavigationProp>();
+
   if (!loaded) {
     return null;
   }
+
+  const handleEnhance = () => {
+    if (selectedImage) {
+      navigation.navigate("Loading", { imageUri: selectedImage });
+      onClose();
+    }
+  };
 
   return (
     <Modal animationType="slide" transparent={true} visible={isVisible}>
@@ -45,7 +62,10 @@ export default function ImageViewer({
               style={styles.image}
             />
           </View>
-          <TouchableOpacity style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={handleEnhance}
+          >
             <Text style={styles.buttonText}>Enhance</Text>
           </TouchableOpacity>
         </View>

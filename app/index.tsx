@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -7,38 +8,30 @@ import {
 } from "react-native";
 import {
   RobotoMono_500Medium_Italic,
+  RobotoMono_300Light,
   useFonts,
 } from "@expo-google-fonts/roboto-mono";
-import { RobotoMono_300Light } from "@expo-google-fonts/roboto-mono";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import * as SplashScreen from "expo-splash-screen";
-
 import * as ImagePicker from "expo-image-picker";
-import { useEffect } from "react";
-import { useState } from "react";
+import {
+  NavigationContainer,
+  NavigationIndependentTree,
+} from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import ImageViewer from "./imageViewer";
+import LoadingScreen from "./loadingScreen";
+import EnhancedImageScreen from "./enhancedImageScreen";
 
 SplashScreen.preventAutoHideAsync();
 
-export default function Index() {
+const Stack = createStackNavigator();
+
+export default function App() {
   const [isModalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
     undefined,
   );
-  const PickImageAsync = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
-      setModalVisible(true);
-    } else {
-      alert("You did not select any image.");
-    }
-  };
   const [loaded, error] = useFonts({
     RobotoMono_500Medium_Italic,
     RobotoMono_300Light,
@@ -54,8 +47,19 @@ export default function Index() {
     return null;
   }
 
-  const openModel = () => {
-    setModalVisible(true);
+  const PickImageAsync = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setSelectedImage(result.assets[0].uri);
+      setModalVisible(true);
+    } else {
+      alert("You did not select any image.");
+    }
   };
 
   const onModalClose = () => {
@@ -63,24 +67,53 @@ export default function Index() {
   };
 
   return (
-    <View style={styles.wrapper}>
-      <StatusBar barStyle="light-content" backgroundColor="#151618" />
-      <TouchableWithoutFeedback onPress={PickImageAsync}>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.headerText}>Image</Text>
-          <Text style={styles.headerText}>Enhancer</Text>
-          <View style={styles.iconContainer}>
-            <AntDesign name="pluscircleo" size={150} color="#94999F" />
-            <Text style={styles.iconText}>Tap anywhere to select a photo</Text>
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
-      <ImageViewer
-        isVisible={isModalVisible}
-        onClose={onModalClose}
-        selectedImage={selectedImage}
-      />
-    </View>
+    <NavigationIndependentTree>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="Home"
+          screenOptions={{ animation: "none" }}
+        >
+          <Stack.Screen name="Home" options={{ headerShown: false }}>
+            {() => (
+              <View style={styles.wrapper}>
+                <StatusBar barStyle="light-content" backgroundColor="#151618" />
+                <TouchableWithoutFeedback onPress={PickImageAsync}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.headerText}>Image</Text>
+                    <Text style={styles.headerText}>Enhancer</Text>
+                    <View style={styles.iconContainer}>
+                      <AntDesign
+                        name="pluscircleo"
+                        size={150}
+                        color="#94999F"
+                      />
+                      <Text style={styles.iconText}>
+                        Tap anywhere to select a photo
+                      </Text>
+                    </View>
+                  </View>
+                </TouchableWithoutFeedback>
+                <ImageViewer
+                  isVisible={isModalVisible}
+                  onClose={onModalClose}
+                  selectedImage={selectedImage}
+                />
+              </View>
+            )}
+          </Stack.Screen>
+          <Stack.Screen
+            name="Loading"
+            component={LoadingScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="EnhancedImage"
+            component={EnhancedImageScreen}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </NavigationIndependentTree>
   );
 }
 

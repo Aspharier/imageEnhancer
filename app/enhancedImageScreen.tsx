@@ -1,6 +1,7 @@
-import React from "react";
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
-import { Image } from "expo-image";
+import React, { useState, useEffect, useRef } from "react";
+import { View, StyleSheet, TouchableOpacity, Text, Image } from "react-native";
+import { captureRef } from "react-native-view-shot";
+import * as MediaLibrary from "expo-media-library";
 import Entypo from "@expo/vector-icons/Entypo";
 
 type EnhancedImageScreenProps = {
@@ -13,6 +14,41 @@ const EnhancedImageScreen = ({
   route,
 }: EnhancedImageScreenProps) => {
   const { enhancedImage } = route.params;
+  const imageRef = useRef<View>(null);
+  const [hasMediaLibraryPermission, setHasMediaLibraryPermission] =
+    useState(false);
+
+  // Request media library permissions
+  useEffect(() => {
+    (async () => {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      setHasMediaLibraryPermission(status === "granted");
+    })();
+  }, []);
+
+  // Save image to media library
+  const onSaveImageAsync = async () => {
+    if (!hasMediaLibraryPermission) {
+      alert("Permission to access media library is required to save images.");
+      return;
+    }
+
+    try {
+      const localUri = await captureRef(imageRef, {
+        height: 440,
+        quality: 1,
+      });
+
+      console.log("Captured image URI:", localUri); // Debugging
+
+      await MediaLibrary.saveToLibraryAsync(localUri);
+      if (localUri) {
+        alert("Saved!");
+      }
+    } catch (e) {
+      console.log("Error saving image:", e);
+    }
+  };
 
   return (
     <View style={styles.modalContainer}>
@@ -24,9 +60,17 @@ const EnhancedImageScreen = ({
           <Entypo name="cross" size={34} color="#FBFDFC" />
         </TouchableOpacity>
         <View style={styles.imageContainer}>
-          <Image source={{ uri: enhancedImage }} style={styles.image} />
+          <View ref={imageRef} collapsable={false}>
+            <Image
+              source={{ uri: enhancedImage }}
+              style={{ width: 300, height: 300, borderRadius: 20 }}
+            />
+          </View>
         </View>
-        <TouchableOpacity style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={onSaveImageAsync}
+        >
           <Text style={styles.buttonText}>Save Image</Text>
         </TouchableOpacity>
       </View>
@@ -55,11 +99,6 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 20,
   },
   buttonContainer: {
     backgroundColor: "#72D3FE",

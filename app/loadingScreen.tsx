@@ -28,7 +28,8 @@ const LoadingScreen = ({ navigation, route }: LoadingScreenProps) => {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to enhance image");
+          const errorResponse = await response.text();
+          throw new Error(`Failed to enhance image: ${errorResponse}`);
         }
 
         const blob = await response.blob();

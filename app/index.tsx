@@ -22,16 +22,22 @@ import { createStackNavigator } from "@react-navigation/stack";
 import ImageViewer from "./imageViewer";
 import LoadingScreen from "./loadingScreen";
 import EnhancedImageScreen from "./enhancedImageScreen";
+import * as MediaLibrary from "expo-media-library";
 
 SplashScreen.preventAutoHideAsync();
 
 const Stack = createStackNavigator();
 
 export default function App() {
+  const [status, requestPermission] = MediaLibrary.usePermissions();
   const [isModalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
     undefined,
   );
+
+  if (status === null) {
+    requestPermission();
+  }
   const [loaded, error] = useFonts({
     RobotoMono_500Medium_Italic,
     RobotoMono_300Light,

@@ -5,6 +5,8 @@ Image Enhancer is a React Native application that allows users to enhance images
 
 ## Preview
 
+![imageTwik-ezgif com-optimize(1)](https://github.com/user-attachments/assets/3f4ff223-577f-4fe6-bff0-db654e72749a)
+
 
 ## Features
 - Upload and enhance images using deep learning.

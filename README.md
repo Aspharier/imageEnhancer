@@ -1,50 +1,71 @@
-# Welcome to your Expo app 👋
+# Image Enhancer
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Overview
+Image Enhancer is a React Native application that allows users to enhance images using an ESRGAN (Enhanced Super-Resolution Generative Adversarial Network) model. The backend is developed in Go and handles image processing using the ESRGAN model.
 
-## Get started
+## Preview
 
-1. Install dependencies
 
-   ```bash
-   npm install
+## Features
+- Upload and enhance images using deep learning.
+- Real-time image enhancement with high-quality output.
+- Cross-platform support (Android & iOS).
+- Responsive UI with smooth interactions.
+
+## Technologies Used
+### Frontend (React Native)
+- React Native
+- Expo
+- React Navigation
+- Axios
+
+### Backend (Go)
+- Gin
+- Go CORS Middleware
+- ESRGAN Model (for image enhancement)
+- File handling & processing in Go
+
+## Installation
+### Prerequisites
+- Node.js & npm/yarn
+- React Native CLI or Expo CLI
+- Go (latest version installed)
+
+### Setup Backend
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/Aspharier/imageEnhancer.git
+   cd image-enhancer/backend
+   ```
+2. Install dependencies:
+   ```sh
+   go mod tidy
+   ```
+3. Run the server:
+   ```sh
+   go run main.go
+   ```
+   The server should be running on `http://localhost:8080`.
+
+### Setup Frontend
+1. Navigate to the React Native project:
+   ```sh
+   cd ../app
+   ```
+2. Install dependencies:
+   ```sh
+   npm install  # or yarn install
+   ```
+3. Start the React Native app:
+   ```sh
+   npx react-native run-android  # For Android
+   npx react-native run-ios      # For iOS
    ```
 
-2. Start the app
+## Usage
+1. Launch the app on your mobile device/emulator.
+2. Upload an image from your gallery or capture one using the camera.
+3. Click on the **Enhance** button.
+4. The app sends the image to the backend, where the ESRGAN model enhances it.
+5. The enhanced image is returned and displayed in the app.
 
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
